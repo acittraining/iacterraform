@@ -1,0 +1,50 @@
+https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3api/copy-object.html
+
+================================= CREATE AN S3 BUCKET ===========================
+
+aws s3 mb s3://bucket-name
+
+aws s3api create-bucket \
+    --bucket my-bucket \
+    --region us-east-1
+	
+==>Example 2: To create a bucket with owner enforced
+
+aws s3api create-bucket \
+    --bucket my-bucket \
+    --region us-east-1 \
+    --object-ownership BucketOwnerEnforced
+	
+==>Example 3: To create a bucket outside of the ``us-east-1`` region
+
+aws s3api create-bucket \
+    --bucket my-bucket \
+    --region eu-west-1 \
+    --create-bucket-configuration LocationConstraint=eu-west-1
+
+============================================= DELETE BUCKET ========================================
+
+aws s3 rb s3://bucket-name --region [region] 
+aws s3api delete-bucket --bucket my-bucket --region us-east-1
+
+============================================= COPY OBJECT TO A BUCKET =============================
+
+aws s3 cp s3://bucket-name/object       s3://bucket-name 
+
+aws s3api copy-object --copy-source bucket-1/test.txt --key test.txt --bucket bucket-2
+
+========================================== Get Bucket Versioning ================================= 
+
+aws s3api get-bucket-versioning --bucket my-bucket
+
+====================================== Object Metadata ==============================================
+To retrieves metadata from an object without returning the object itself
+
+The following get-object-attributes example retrieves metadata from the object doc1.rtf.
+
+aws s3api get-object-attributes \
+    --bucket my-bucket \
+    --key doc1.rtf \
+    --object-attributes "StorageClass" "ETag" "ObjectSize"
+	
+	
