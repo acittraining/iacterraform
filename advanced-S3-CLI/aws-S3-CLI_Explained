@@ -1,0 +1,148 @@
+===================================================== S3 Commands ========================================================
+Create new bucket
+
+$ aws s3api create-bucket –bucket test-bucket –region us-east-1
+=========================================================================================================================
+You can use the below syntax for creating a bucket too. 
+It achieves the same purpose but uses a different command:
+
+aws s3 mb s3://my-test-bucket-for-johncarter
+
+===========================================================================================================================
+Note that the bucket name should be universally unique.
+Also, if you do not specify any region, then the bucket will be created in the default region set by your CLI configuration. 
+To explicitly create a bucket in a particular region, use the –region parameter as shown below:
+
+aws s3 mb s3://my-test-bucket-for-johncarter –region us-west-1
+
+=============================================================================================================================
+
+Copy file from local file system to S3 bucket:
+
+$ aws s3 cp samplefile.txt s3://my-test-bucket-for-johncarter
+
+Copy the whole folder from the local file system to S3 bucket:
+
+$ aws s3 cp /data s3://my-test-bucket-for-johncarter –recursive
+===========================================================================================================================
+
+Download a file from S3 bucket:
+
+$ aws s3 cp s3://my-test-bucket-for-johncarter/samplefile.txt
+
+Copy a file from one bucket to another bucket. Note that you should have permission on both the buckets.
+
+$ aws s3 cp s3://my-test-bucket-for-johncarter/staging/configuration.xml s3://Johncarternackupbucket
+
+============================================================================================================================
+Move a file from S3 bucket to your local file system
+
+$ aws s3 mv s3://my-test-bucket-for-johncarter/configuration.xml /home/project
+
+Note that the above command will remove the file from S3 bucket so it is a cut operation instead of copy.
+
+
+=============================================================================================================================
+Delete all files from S3 bucket
+
+$ aws s3 rm s3://my-test-bucket-for-johncarter –recursive
+
+This command will remove all the files present in the bucket.
+
+Delete a particular file from the bucket:
+
+aws s3 rm s3://my-test-bucket-for-johncarter/configuration.xml
+
+Delete all files from a bucket except some particular files. The below command will remove all files from the bucket except the xml files
+
+aws s3 rm s3://my-test-bucket-for-johncarter –recursive –exclude “*.xml”
+
+=============================================================================================================================
+
+Sync the files between your local file system to S3 bucket. 
+It will recursively copy only the new or updated files from the 
+local directory to the destination S3 bucket.
+
+$ aws s3 sync /backupfolder s3://my-test-bucket-for-johncarter
+
+Sync all files from S3 bucket to your local file system
+
+$ aws s3 sync s3://my-test-bucket-for-johncarter/backup /localfolder/backup
+
+You can also use the sync command to sync the files from one S3 bucket to another S3 bucket.
+
+$ aws s3 sync s3://my-test-bucket-for-johncarter s3://backup-bucket
+
+
+==============================================================================================================================
+Host a static website on S3 bucket. You will need to mention both the index and error document.
+
+aws s3 website s3://my-test-bucket-for-johncarter/ –index-document index.html –error-document error.html
+
+This bucket is in us-east-2 region. So, after executing the above command, you can access the my-test-bucket-for-johncarter as a static website using the following URL: http://my-test-bucket-for-johncarter.s3-website-us-east-2.amazonaws.com/
+
+You also need to ensure that you set the public access on this S3 bucket so that it acts as a public-facing website.
+
+==============================================================================================================================
+
+
+Pre-sign the URL of S3 objects for temporary access
+When you pre-sign a URL for an S3 file, anyone accessing the URL can retrieve the S3 file with an HTTP GET request.
+For example, if you want to give someone temporary access to the configuration.xml file, just pre-sign this specific S3 object as below.
+
+$ aws s3 presign s3://my-test-bucket-for-johncarter/ configuration.xml
+
+By default, the above URL will be valid for 3600 seconds (1 hour). If you want to specify a shorter expiry time, use the parameter of expires-in. 
+The following command will create a pre-signed URL that is valid only for 60 seconds.
+
+$ aws s3 presign s3://my-test-bucket-for-johncarter/configuration.xml –expires-in 60
+
+
+==============================================================================================================================
+
+Remove an S3 bucket
+
+$ aws s3 rb s3://my-test-bucket-for-johncarter
+
+The above command will remove the bucket. 
+Note that the bucket must be empty if you want to remove it. 
+If it has any objects, then it will throw an error. To forcibly remove a bucket having objects, use the — force parameter as below:
+
+$ aws s3 rb s3://my-test-bucket-for-johncarter –force
+
+==============================================================================================================================
+Encrypt existing S3 object using CLI
+
+You can copy a single object back to its encrypted form with default encryption provided by AWS i.e. SSE-S3 (server-side encryption with Amazon S3-managed keys):
+
+aws s3 cp s3://my-test-bucket-for-johncartert/testfile s3://awsexamplebucket/testfile –sse AES256
+
+AWS S3 List Buckets
+
+
+
+==============================================================================================================================
+You can use the S3 CLI to interact with S3 buckets in many ways. 
+You can list all the buckets in your account. 
+You can use CLI to list different objects from a specific bucket. You can move data between different buckets.
+
+==============================================================================================================================
+Find below some of the CLI commands through which you can list and manage your S3 buckets using AWS CLI:
+
+List all the buckets in your AWS account.
+
+$ aws s3 ls
+
+Display the summary of the total size and number of objects in the bucket:
+
+$ aws s3 ls s3://my-test-bucket-for-johncarter-responsive-website-serverless-application –summarize
+
+
+To view the objects in an S3 bucket in a human-readable form, use the following command:
+
+aws s3 ls s3://my-test-bucket-for-johncarter /staging/ –recursive –human-readable –summarize
+
+
+==============================================================================================================================
+
+
